@@ -198,7 +198,7 @@ class Ui_Sensors(object):
         self.celsius_radio.clicked.connect(self.fah_to_cel)
         self.queryData()
         self.timer = QTimer()
-        self.timer.timeout.connect(self.getCurrTime)
+        #self.timer.timeout.connect(self.getCurrTime)
         self.timer.timeout.connect(self.queryData)
         self.timer.start(5000)
         QtCore.QMetaObject.connectSlotsByName(Sensors)
@@ -231,40 +231,45 @@ class Ui_Sensors(object):
         #Function provided by Adafruit_DHT library for taking data from DHT22 sensor
         humidity, temperature = sense.read_retry(22,4)
         if humidity and temperature is not None:
-            temp_data = '{0:.2f}'.format((temperature*self.mult_factor)+ self.add_factor)
-            humid_data = '{0:.2f}'.format(humidity) + '%'
-            self.curr_temp_box.setText(temp_data + self.temp_unit)
-            self.curr_humid_box.setText(humid_data)
+            temp_data = '{0:.2f}'.format(temperature)
+            humid_data = '{0:.2f}'.format(humidity)
+            self.curr_temp_box.setText('{0:.2f}'.format((temperature*self.mult_factor)+ self.add_factor) + self.temp_unit)
+            self.curr_humid_box.setText(humid_data  + '%')
 
             #Code for computing average of temperature and humidity values
             self.sum_humid += float(humidity)
             self.sum_temp += float(temperature)
             avg_humid = (self.sum_humid/float(self.measure_count))
             avg_temp = (self.sum_temp/float(self.measure_count))
+            avg_temp_data = '{0:.2f}'.format(avg_temp)
+            avg_humid_data = '{0:.2f}'.format(avg_humid)
 
             if self.measure_count==1:
                 self.avg_temp_box.setText("")
                 self.avg_humid_box.setText("")
             else:
                 self.avg_temp_box.setText('{0:.2f}'.format((avg_temp*self.mult_factor)+self.add_factor)+self.temp_unit)
-                self.avg_humid_box.setText('{0:.2f}'.format(avg_humid)+'%')
+                self.avg_humid_box.setText('{0:.2f}'.format(avg_humid) + '%')
 
             self.measure_count += 1
 
             #Maximum and Minimum value computation
             if (temperature > self.max_temp):
-                self.max_temp =temperature
+                self.max_temp = temperature
 
             if (humidity > self.max_humid):
-                self.max_humid =humidity
+                self.max_humid = humidity
 
             if (temperature < self.min_temp):
-                self.min_temp =temperature
+                self.min_temp = temperature
 
             if (humidity < self.min_humid):
-                self.min_humid =humidity
+                self.min_humid = humidity
 
-
+            max_temp_data = '{0:.2f}'.format(self.max_temp)
+            min_temp_data = '{0:.2f}'.format(self.min_temp)
+            max_humid_data = '{0:.2f}'.format(self.max_humid)
+            min_humid_data = '{0:.2f}'.format(self.min_humid)
             self.max_temp_box.setText('{0:.2f}'.format((self.max_temp*self.mult_factor)+self.add_factor)+self.temp_unit)
             self.max_humid_box.setText('{0:.2f}'.format(self.max_humid)+'%')
 
@@ -274,7 +279,7 @@ class Ui_Sensors(object):
             #Writing acquired values to th_data.csv file
             with open('th_data.csv', 'a', newline = '') as comfile:
                 file_write = csv.writer(comfile, delimiter = ',')
-                file_write.writerow([humid_data, temp_data])
+                file_write.writerow([humid_data, temp_data, avg_humid_data, avg_temp_data, max_humid_data, max_temp_data, min_humid_data, min_temp_data, self.getCurrTime()])
 
 
         #Error Checking if no data is Received
@@ -285,6 +290,7 @@ class Ui_Sensors(object):
     def getCurrTime(self):
         current = datetime.datetime.now()
         self.datetime_box.setText(current.strftime("%m/%d/%Y %H:%M"))
+        return current.strftime("%m/%d/%Y %H:%M")
 
     def cel_to_fah(self):
         self.mult_factor = 1.8
