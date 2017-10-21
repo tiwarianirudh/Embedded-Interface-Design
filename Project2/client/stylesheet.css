@@ -8,9 +8,9 @@ h1 {
     text-align: center;
 }
 
-#container {
+/*#container {
 
-}
+}*/
 
 #label_current_temp{
   font-weight: bold;
@@ -64,42 +64,44 @@ h1 {
 #out_current_temp{
   position: absolute;
   top: 150px;
-  left: 150px;
+  left: 285px;
 }
 #out_current_hum{
   position: absolute;
+  /*background-color: red;
+  color: black;*/
   top: 250px;
-  left: 150px;
+  left: 275px;
 }
 #out_avg_temp{
   position: absolute;
   top: 350px;
-  left: 150px;
+  left: 285px;
 }
 #out_avg_hum{
   position: absolute;
   top: 450px;
-  left: 150px;
+  left: 275px;
 }
 #out_min_temp{
   position: absolute;
   top: 150px;
-  left: 650px;
+  left: 790px;
 }
 #out_min_hum{
   position: absolute;
   top: 250px;
-  left: 650px;
+  left: 775px;
 }
 #out_max_temp{
   position: absolute;
   top: 350px;
-  left: 650px;
+  left: 790px;
 }
 #out_max_hum{
   position: absolute;
   top: 450px;
-  left: 650px;
+  left: 775px;
 }
 
 #get_current_temp{
@@ -109,7 +111,7 @@ h1 {
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 8px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -122,7 +124,7 @@ h1 {
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 8px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -135,7 +137,7 @@ h1 {
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 8px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -148,7 +150,7 @@ h1 {
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 8px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -161,7 +163,7 @@ h1 {
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 8px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -174,7 +176,7 @@ h1 {
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 8px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -187,7 +189,7 @@ h1 {
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 8px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -200,7 +202,7 @@ h1 {
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 8px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -214,7 +216,7 @@ h1 {
   background-color: white; /* Green */
   border: none;
   color: black;
-  padding: 15px 32px;
+  padding: 8px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -229,7 +231,7 @@ h1 {
   background-color: white; /* Green */
   border: none;
   color: black;
-  padding: 15px 32px;
+  padding: 8px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
