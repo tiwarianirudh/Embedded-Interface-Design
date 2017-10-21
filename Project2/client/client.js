@@ -7,51 +7,224 @@ log = function(data){
 
 $(document).ready(function () {
   $("div#message_details").hide()
-    var ws;
-  $("#open").click(function(evt) {
-    evt.preventDefault();
+  var ws;
+  var if_farh= 0;
+  var temp = 0;
+  var switch_current_data;
+  var switch_avg_data;
+  var switch_min_data;
+  var switch_max_data;
+  var error;
+  // $("#open").click(function(evt) {
+  //   evt.preventDefault();
     // var host = $("#host").val();
     // var port = $("#port").val();
     // var uri = $("#uri").val();
 
     // create websocket instance
-    ws = new WebSocket("ws://10.0.0.224:8888/ws");
-
-    $("#get_current_temp").click(function(evt){
-      ws.send("currentTemp");
-    });
-
-    $("#get_current_hum").click(function(evt) {
-      ws.send("currentHum");
-    });
-
-    $("#get_avg_temp").click(function(evt) {
-      ws.send("avgTemp");
-    });
-
-    $("#get_avg_hum").click(function(evt) {
-      ws.send("avgHum");
-    });
-
-    $("#get_min_temp").click(function(evt) {
-      ws.send("minTemp");
-    });
-
-    $("#get_min_hum").click(function(evt) {
-      ws.send("minHum");
-    });
-
-    $("#get_max_temp").click(function(evt) {
-      ws.send("maxTemp");
-    });
-
-    $("#get_max_hum").click(function(evt) {
-      ws.send("maxHum");
-    });
-
+    ws = new WebSocket("ws://127.0.1.1:8888/ws");
     ws.onmessage = function(evt) {
       var buffer = evt.data.split("-")
 
-      if()
+      if(buffer[0] == "current_temp"){
+        if(!if_farh){
+          // https://stackoverflow.com/questions/12839567/converting-string-to-number-in-javascript-jquery
+          var temp = parseInt(buffer[1])
+          temp = (temp * 5.0/9.0)+32
+          $("#out.current_temp").val(temp.toFixed(2)+ "\u00b0F");
+        }
+        else{
+        $("#out.current_temp").val(buffer[1] + "\u00b0C");
+        }
+      }
+
+      if(buffer[0] == "current_hum"){
+        $("#out_current_hum").val(buffer[1] + "%");
+      }
+      if(buffer[0] == "avg_temp"){
+        if(!if_farh){
+          // https://stackoverflow.com/questions/12839567/converting-string-to-number-in-javascript-jquery
+          var temp = parseInt(buffer[1])
+          temp = (temp * 5.0/9.0)+32
+          $("#out.avg_temp").val(temp.toFixed(2)+ "\u00b0F");
+        }
+        else{
+        $("#out.avg_temp").val(buffer[1] + "\u00b0C");
+        }
+      }
+      if(buffer[0] == "avg_hum"){
+        $("#out_avg_hum").val(buffer[1] + "%");
+      }
+      if(buffer[0] == "min_temp"){
+        if(!if_farh){
+          // https://stackoverflow.com/questions/12839567/converting-string-to-number-in-javascript-jquery
+          var temp = parseInt(buffer[1])
+          temp = (temp * 5.0/9.0)+32
+          $("#out.min_temp").val(temp.toFixed(2)+ "\u00b0F");
+        }
+        else{
+        $("#out.min_temp").val(buffer[1] + "\u00b0C");
+        }
+      }
+      if(buffer[0] == "min_hum"){
+        $("#out_min_hum").val(buffer[1] + "%");
+      }
+      if(buffer[0] == "max_temp"){
+        if(!if_farh){
+          // https://stackoverflow.com/questions/12839567/converting-string-to-number-in-javascript-jquery
+          var temp = parseInt(buffer[1])
+          temp = (temp * 5.0/9.0)+32
+          $("#out.max_temp").val(temp.toFixed(2)+ "\u00b0F");
+        }
+        else{
+        $("#out.max_temp").val(buffer[1] + "\u00b0C");
+        }
+      }
+      if(buffer[0] == "max_hum"){
+        $("#out_max_hum").val(buffer[1] + "%");
+      }
     };
-)};
+
+    $("#get_current_temp").click(function(evt){
+      ws.send("current_temp");
+    });
+
+    $("#get_current_hum").click(function(evt) {
+      ws.send("current_hum");
+    });
+
+    $("#get_avg_temp").click(function(evt) {
+      ws.send("avg_temp");
+    });
+
+    $("#get_avg_hum").click(function(evt) {
+      ws.send("avg_hum");
+    });
+
+    $("#get_min_temp").click(function(evt) {
+      ws.send("min_temp");
+    });
+
+    $("#get_min_hum").click(function(evt) {
+      ws.send("min_hum");
+    });
+
+    $("#get_max_temp").click(function(evt) {
+      ws.send("max_temp");
+    });
+
+    $("#get_max_hum").click(function(evt) {
+      ws.send("max_hum");
+    });
+
+    $("#scale_switch").click(function(evt){
+      var buffer1;
+
+      if(if_farh){
+
+        switch_current_data = $("#out.current_temp").val()
+        var buffer1 = switch_current_data.split("\u00b0")
+        var temp = parseInt(buffer1[0])
+        temp = ((temp-32)*5.0)/9.0
+        // Reference:
+        // https://www.w3schools.com/jsref/jsref_isnan_number.asp
+        if(Number.isNaN(temp) == "false"){
+          $("#out.current_temp").val(temp.toFixed(2)+"\u00b0F");
+        }
+        else{
+          $("#out.current_temp").val("Error in Conversion");
+        }
+
+        switch_avg_data = $("#out.avg_temp").val()
+        var buffer1 = switch_avg_data.split("\u00b0")
+        var temp = parseInt(buffer1[0])
+        temp = ((temp-32)*5.0)/9.0
+        // https://www.w3schools.com/jsref/jsref_isnan_number.asp
+        if(Number.isNaN(temp) == "false"){
+          $("#out.avg_temp").val(temp.toFixed(2)+"\u00b0C");
+        }
+        else{
+          $("#out.avg_temp").val("Error in Conversion");
+        }
+
+        switch_min_data = $("#out.min_temp").val()
+        var buffer1 = switch_min_data.split("\u00b0")
+        var temp = parseInt(buffer1[0])
+        temp = ((temp-32)*5.0)/9.0
+        // https://www.w3schools.com/jsref/jsref_isnan_number.asp
+        if(Number.isNaN(temp) == "false"){
+          $("#out.min_temp").val(temp.toFixed(2)+"\u00b0C");
+        }
+        else{
+          $("#out.min_temp").val("Error in Conversion");
+        }
+
+        switch_max_data = $("#out.max_temp").val()
+        var buffer1 = switch_max_data.split("\u00b0")
+        var temp = parseInt(buffer1[0])
+        temp = ((temp-32)*5.0)/9.0
+        // https://www.w3schools.com/jsref/jsref_isnan_number.asp
+        if(Number.isNaN(temp) == "false"){
+          $("#out.max_temp").val(temp.toFixed(2)+"\u00b0C");
+        }
+        else{
+          $("#out.max_temp").val("Error in Conversion");
+        }
+        if_farh = 1;
+        $("#scale_switch").fadeOut(200).val("Switch Scale: C to F").fadeIn(200)
+      }
+
+
+      else{
+        switch_current_data = $("#out.current_temp").val()
+        var buffer1 = switch_current_data.split("\u00b0")
+        var temp = parseInt(buffer1[0])
+        temp = ((temp*9.0)/5.0)+32
+        // https://www.w3schools.com/jsref/jsref_isnan_number.asp
+        if(Number.isNaN(temp) == "false"){
+          $("#out.current_temp").val(temp.toFixed(2)+"\u00b0F");
+        }
+        else{
+          $("#out.current_temp").val("Error in Conversion");
+        }
+
+        switch_avg_data = $("#out.avg_temp").val()
+        var buffer1 = switch_avg_data.split("\u00b0")
+        var temp = parseInt(buffer1[0])
+        temp = ((temp*9.0)/5.0)+32
+        // https://www.w3schools.com/jsref/jsref_isnan_number.asp
+        if(Number.isNaN(temp) == "false"){
+          $("#out.avg_temp").val(temp.toFixed(2)+"\u00b0F");
+        }
+        else{
+          $("#out.avg_temp").val("Error in Conversion");
+        }
+
+        switch_min_data = $("#out.min_temp").val()
+        var buffer1 = switch_min_data.split("\u00b0")
+        var temp = parseInt(buffer1[0])
+        temp = ((temp*9.0)/5.0)+32
+        // https://www.w3schools.com/jsref/jsref_isnan_number.asp
+        if(Number.isNaN(temp) == "false"){
+          $("#out.min_temp").val(temp.toFixed(2)+"\u00b0F");
+        }
+        else{
+          $("#out.min_temp").val("Error in Conversion");
+        }
+
+        switch_max_data = $("#out.max_temp").val()
+        var buffer1 = switch_max_data.split("\u00b0")
+        var temp = parseInt(buffer1[0])
+        temp = ((temp*9.0)/5.0)+32
+        // https://www.w3schools.com/jsref/jsref_isnan_number.asp
+        if(Number.isNaN(temp) == "false"){
+          $("#out.max_temp").val(temp.toFixed(2)+"\u00b0F");
+        }
+        else{
+          $("#out.max_temp").val("Error in Conversion");
+        }
+        if_farh = 0;
+        $("#scale_switch").fadeOut(200).val("Switch Scale: F to C").fadeIn(200)
+      }
+    });
+});
