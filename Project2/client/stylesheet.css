@@ -86,7 +86,7 @@ h1 {
 #out_min_temp{
   position: absolute;
   top: 150px;
-  left: 790px;
+  left: 800px;
 }
 #out_min_hum{
   position: absolute;
@@ -96,7 +96,7 @@ h1 {
 #out_max_temp{
   position: absolute;
   top: 350px;
-  left: 790px;
+  left: 800px;
 }
 #out_max_hum{
   position: absolute;
