@@ -1,0 +1,58 @@
+<!-- Refernce: www.w3schools.com -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather Statistics</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+  <script src="http://code.jquery.com/jquery.min.js"></script>
+  <script src="client.js"></script>
+</head>
+<body>
+  <h1 id="page heading">Weather Statistics</h1>
+  <!-- <div id="container"> -->
+    <div id="connection_details">
+      <label for="current_temp" id="label_current_temp">Current Temperature: </label>
+      <output type="text" id="out_current_temp"></output></br>
+      <input type="submit" id="get_current_temp" value="Get Current Tempurature"> </input>
+
+      <label for="current_hum" id="label_current_hum">Current Humidity: </label>
+      <output type="text" id="out_current_hum"></output></br>
+      <input type="submit" id="get_current_hum" value="Get Current Humidity"> </input>
+
+      <label for="avg_temp" id="label_avg_temp">Average Tempearture: </label>
+      <output type="text" id="out_avg_temp"></output></br>
+      <input type="submit" id="get_avg_temp" value="Get Average Temperature"> </input>
+
+      <label for="avg_humidity" id="label_avg_hum">Average Humidity: </label>
+      <output type="text" id="out_avg_hum"></output></br>
+      <input type="submit" id="get_avg_hum" value="Get Average Humdity"> </input>
+
+      <label for="min_temp" id="label_min_temp">Minimum Temperature: </label>
+      <output type="text" id="out_min_temp"></output></br>
+      <input type="submit" id="get_min_temp" value="Get Minimum Temperature Value"> </input>
+
+      <label for="min_hum" id="label_min_hum">Minimum Humidity: </label>
+      <output type="text" id="out_min_hum"></output></br>
+      <input type="submit" id="get_min_hum" value="Get Minimum Humidity"> </input>
+
+      <label for="max_temp" id="label_max_temp">Maximum Temperature: </label>
+      <output type="text" id="out_max_temp"></output></br>
+      <input type="submit" id="get_max_temp" value="Get Maximum Temperature"> </input>
+
+      <label for="max_hum" id="label_max_hum">Maximum Humidity: </label>
+      <output type="text" id="out_max_hum"></output></br>
+      <input type="submit" id="get_max_hum" value="Get Maximum Humidity"> </input>
+
+      <!-- <label for="scale_switch" id="scale_switch">Switch Temperature Scale</label> -->
+      <input type="submit" id="scale_switch" value="Switch Scale: C to F"></input>
+      <input type="reset" id="clear" value="Clear"></input>
+
+    <!-- </div> -->
+    <!-- <div id="message_details">
+    </div> -->
+    <div id="terminal"></div>
+
+  </div>
+</body>
+</html>
