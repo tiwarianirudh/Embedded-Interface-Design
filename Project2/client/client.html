@@ -3,12 +3,14 @@
 <html>
 <head>
   <title>Weather Statistics</title>
+  <meta charset="utf-8" />
   <link rel="stylesheet" type="text/css" href="stylesheet.css">
   <script src="http://code.jquery.com/jquery.min.js"></script>
   <script src="client.js"></script>
+</head>
 <body>
-  <h1 id="heading">Weather Statistics</h1>
-  <div id="container">
+  <h1 id="page heading">Weather Statistics</h1>
+  <!-- <div id="container"> -->
     <div id="connection_details">
       <label for="current_temp" id="label_current_temp">Current Temperature: </label>
       <output type="text" id="out_current_temp"></output></br>
@@ -43,13 +45,13 @@
       <input type="submit" id="get_max_hum" value="Get Maximum Humidity"> </input>
 
       <!-- <label for="scale_switch" id="scale_switch">Switch Temperature Scale</label> -->
-      <input type="submit" id="scale_switch" value="Switch Temperature Scale"></input>
+      <input type="submit" id="scale_switch" value="Switch Scale: C to F"></input>
       <input type="reset" id="clear" value="Clear"></input>
 
-    </div>
+    <!-- </div> -->
     <!-- <div id="message_details">
-    </div>
-    <div id="terminal"> -->
+    </div> -->
+    <div id="terminal"></div>
 
   </div>
 </body>
