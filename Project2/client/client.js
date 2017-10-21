@@ -22,19 +22,19 @@ $(document).ready(function () {
     // var uri = $("#uri").val();
 
     // create websocket instance
-    ws = new WebSocket("ws://127.0.1.1:8888/ws");
+    ws = new WebSocket("ws://10.0.0.224:8888/ws");
     ws.onmessage = function(evt) {
       var buffer = evt.data.split("-")
 
       if(buffer[0] == "current_temp"){
-        if(!if_farh){
+        if(if_farh){
           // https://stackoverflow.com/questions/12839567/converting-string-to-number-in-javascript-jquery
           var temp = parseInt(buffer[1])
           temp = (temp * 5.0/9.0)+32
-          $("#out.current_temp").val(temp.toFixed(2)+ "\u00b0F");
+          $("#out_current_temp").val(temp.toFixed(2)+ "\u00b0F");
         }
         else{
-        $("#out.current_temp").val(buffer[1] + "\u00b0C");
+        $("#out_current_temp").val(buffer[1] + "\u00b0C");
         }
       }
 
@@ -42,42 +42,42 @@ $(document).ready(function () {
         $("#out_current_hum").val(buffer[1] + "%");
       }
       if(buffer[0] == "avg_temp"){
-        if(!if_farh){
+        if(if_farh){
           // https://stackoverflow.com/questions/12839567/converting-string-to-number-in-javascript-jquery
           var temp = parseInt(buffer[1])
           temp = (temp * 5.0/9.0)+32
-          $("#out.avg_temp").val(temp.toFixed(2)+ "\u00b0F");
+          $("#out_avg_temp").val(temp.toFixed(2)+ "\u00b0F");
         }
         else{
-        $("#out.avg_temp").val(buffer[1] + "\u00b0C");
+        $("#out_avg_temp").val(buffer[1] + "\u00b0C");
         }
       }
       if(buffer[0] == "avg_hum"){
         $("#out_avg_hum").val(buffer[1] + "%");
       }
       if(buffer[0] == "min_temp"){
-        if(!if_farh){
+        if(if_farh){
           // https://stackoverflow.com/questions/12839567/converting-string-to-number-in-javascript-jquery
           var temp = parseInt(buffer[1])
           temp = (temp * 5.0/9.0)+32
-          $("#out.min_temp").val(temp.toFixed(2)+ "\u00b0F");
+          $("#out_min_temp").val(temp.toFixed(2)+ "\u00b0F");
         }
         else{
-        $("#out.min_temp").val(buffer[1] + "\u00b0C");
+        $("#out_min_temp").val(buffer[1] + "\u00b0C");
         }
       }
       if(buffer[0] == "min_hum"){
         $("#out_min_hum").val(buffer[1] + "%");
       }
       if(buffer[0] == "max_temp"){
-        if(!if_farh){
+        if(if_farh){
           // https://stackoverflow.com/questions/12839567/converting-string-to-number-in-javascript-jquery
           var temp = parseInt(buffer[1])
           temp = (temp * 5.0/9.0)+32
-          $("#out.max_temp").val(temp.toFixed(2)+ "\u00b0F");
+          $("#out_max_temp").val(temp.toFixed(2)+ "\u00b0F");
         }
         else{
-        $("#out.max_temp").val(buffer[1] + "\u00b0C");
+        $("#out_max_temp").val(buffer[1] + "\u00b0C");
         }
       }
       if(buffer[0] == "max_hum"){
@@ -119,111 +119,111 @@ $(document).ready(function () {
 
     $("#scale_switch").click(function(evt){
       var buffer1;
+      //switch_current_data = $("#out_current_temp").val()
 
       if(if_farh){
-
-        switch_current_data = $("#out.current_temp").val()
-        var buffer1 = switch_current_data.split("\u00b0")
-        var temp = parseInt(buffer1[0])
+        switch_current_data = $("#out_current_temp").val()
+        var buffer1 = switch_current_data.split("-")
+        var temp = parseInt(buffer1[1])
         temp = ((temp-32)*5.0)/9.0
         // Reference:
         // https://www.w3schools.com/jsref/jsref_isnan_number.asp
         if(Number.isNaN(temp) == "false"){
-          $("#out.current_temp").val(temp.toFixed(2)+"\u00b0F");
+          $("#out_current_temp").val(temp.toFixed(2)+"\u00b0F");
         }
         else{
-          $("#out.current_temp").val("Error in Conversion");
+          $("#out_current_temp").val("Error in Conversion");
         }
 
-        switch_avg_data = $("#out.avg_temp").val()
-        var buffer1 = switch_avg_data.split("\u00b0")
-        var temp = parseInt(buffer1[0])
+        switch_avg_data = $("#out_avg_temp").val()
+        var buffer1 = switch_avg_data.split("-")
+        var temp = parseInt(buffer1[1])
         temp = ((temp-32)*5.0)/9.0
         // https://www.w3schools.com/jsref/jsref_isnan_number.asp
         if(Number.isNaN(temp) == "false"){
-          $("#out.avg_temp").val(temp.toFixed(2)+"\u00b0C");
+          $("#out_avg_temp").val(temp.toFixed(2)+"\u00b0F");
         }
         else{
-          $("#out.avg_temp").val("Error in Conversion");
+          $("#out_avg_temp").val("Error in Conversion");
         }
 
-        switch_min_data = $("#out.min_temp").val()
-        var buffer1 = switch_min_data.split("\u00b0")
-        var temp = parseInt(buffer1[0])
+        switch_min_data = $("#out_min_temp").val()
+        var buffer1 = switch_min_data.split("1")
+        var temp = parseInt(buffer1[1])
         temp = ((temp-32)*5.0)/9.0
         // https://www.w3schools.com/jsref/jsref_isnan_number.asp
         if(Number.isNaN(temp) == "false"){
-          $("#out.min_temp").val(temp.toFixed(2)+"\u00b0C");
+          $("#out_min_temp").val(temp.toFixed(2)+"\u00b0C");
         }
         else{
-          $("#out.min_temp").val("Error in Conversion");
+          $("#out_min_temp").val("Error in Conversion");
         }
 
-        switch_max_data = $("#out.max_temp").val()
-        var buffer1 = switch_max_data.split("\u00b0")
-        var temp = parseInt(buffer1[0])
+        switch_max_data = $("#out_max_temp").val()
+        var buffer1 = switch_max_data.split("-")
+        var temp = parseInt(buffer1[1])
         temp = ((temp-32)*5.0)/9.0
         // https://www.w3schools.com/jsref/jsref_isnan_number.asp
         if(Number.isNaN(temp) == "false"){
-          $("#out.max_temp").val(temp.toFixed(2)+"\u00b0C");
+          $("#out_max_temp").val(temp.toFixed(2)+"\u00b0C");
         }
         else{
-          $("#out.max_temp").val("Error in Conversion");
+          $("#out_max_temp").val("Error in Conversion");
         }
-        if_farh = 1;
+        if_farh = 0;
         $("#scale_switch").fadeOut(200).val("Switch Scale: C to F").fadeIn(200)
       }
 
 
       else{
-        switch_current_data = $("#out.current_temp").val()
-        var buffer1 = switch_current_data.split("\u00b0")
-        var temp = parseInt(buffer1[0])
+        switch_current_data = $("#out_current_temp").val()
+        var buffer1 = switch_current_data.split("-")
+        var temp = parseInt(buffer1[1])
         temp = ((temp*9.0)/5.0)+32
         // https://www.w3schools.com/jsref/jsref_isnan_number.asp
         if(Number.isNaN(temp) == "false"){
-          $("#out.current_temp").val(temp.toFixed(2)+"\u00b0F");
+          $("#out_current_temp").val(temp.toFixed(2)+"\u00b0C");
         }
         else{
-          $("#out.current_temp").val("Error in Conversion");
+          $("#out_current_temp").val("Error in Conversion");
         }
 
-        switch_avg_data = $("#out.avg_temp").val()
-        var buffer1 = switch_avg_data.split("\u00b0")
-        var temp = parseInt(buffer1[0])
+        switch_avg_data = $("#out_avg_temp").val()
+        var buffer1 = switch_avg_data.split("-")
+        var temp = parseInt(buffer1[1])
         temp = ((temp*9.0)/5.0)+32
         // https://www.w3schools.com/jsref/jsref_isnan_number.asp
         if(Number.isNaN(temp) == "false"){
-          $("#out.avg_temp").val(temp.toFixed(2)+"\u00b0F");
+          $("#out_avg_temp").val(temp.toFixed(2)+"\u00b0C");
         }
         else{
-          $("#out.avg_temp").val("Error in Conversion");
+          $("#out_avg_temp").val("Error in Conversion");
         }
 
-        switch_min_data = $("#out.min_temp").val()
-        var buffer1 = switch_min_data.split("\u00b0")
+        switch_min_data = $("#out_min_temp").val()
+        var buffer1 = switch_min_data.split("-")
         var temp = parseInt(buffer1[0])
         temp = ((temp*9.0)/5.0)+32
         // https://www.w3schools.com/jsref/jsref_isnan_number.asp
         if(Number.isNaN(temp) == "false"){
-          $("#out.min_temp").val(temp.toFixed(2)+"\u00b0F");
+          $("#out_min_temp").val(temp.toFixed(2)+"\u00b0C");
         }
         else{
-          $("#out.min_temp").val("Error in Conversion");
+          $("#out_min_temp").val("Error in Conversion");
         }
 
-        switch_max_data = $("#out.max_temp").val()
-        var buffer1 = switch_max_data.split("\u00b0")
-        var temp = parseInt(buffer1[0])
+        switch_max_data = $("#out_max_temp").val()
+        var buffer1 = switch_max_data.split("\-")
+        var temp = parseInt(buffer1[1])
         temp = ((temp*9.0)/5.0)+32
         // https://www.w3schools.com/jsref/jsref_isnan_number.asp
         if(Number.isNaN(temp) == "false"){
-          $("#out.max_temp").val(temp.toFixed(2)+"\u00b0F");
+          $("#out_max_temp").val(temp.toFixed(2)+"\u00b0C");
         }
         else{
-          $("#out.max_temp").val("Error in Conversion");
+          $("#out_max_temp").val("Error in Conversion");
         }
-        if_farh = 0;
+        if_farh = 1;
         $("#scale_switch").fadeOut(200).val("Switch Scale: F to C").fadeIn(200)
       }
     });
