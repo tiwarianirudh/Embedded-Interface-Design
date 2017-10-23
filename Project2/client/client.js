@@ -24,9 +24,24 @@ $(document).ready(function () {
     // create websocket instance
     ws = new WebSocket("ws://10.0.0.224:8888/ws");
 
+    ws.onerror = function(error){
+      alert("Error Connecting to Server")
+    }
+    ws.onclose = function(evt) {
+      alert("Retry Refreshing the Webpage!");
+    }
+
     ws.onmessage = function(evt) {
     //  alert("Connected To Weather Statistics");
       var buffer = evt.data.split("-")
+
+      if(buffer[0] == "graph_temp"){
+        window.open(buffer[1]);
+      }
+
+      if(buffer[0] == "graph_hum"){
+        window.open(buffer[1]);
+      }
 
       if(buffer[0] == "current_temp"){
         if(if_farh){
@@ -120,6 +135,15 @@ $(document).ready(function () {
       ws.send("max_hum");
     });
 
+    $("#graph_temp").click(function(evt) {
+      ws.send("graph_temp");
+    });
+
+    $("#graph_hum").click(function(evt) {
+      ws.send("graph_hum");
+    });
+
+
     $("#clear").click(function(evt) {
       $("#out_current_temp").val(" ");
       $("#out_avg_temp").val(" ");
@@ -186,7 +210,7 @@ $(document).ready(function () {
           $("#out_max_temp").val("Error: No data fetched to Change Scale");
         }
         if_farh = 0;
-        $("#scale_switch").fadeOut(200).val("Switch Scale: C to F").fadeIn(200)
+        $("#scale_switch").fadeOut(300).val("Switch Scale: C to F").fadeIn(300)
       }
 
 
@@ -239,7 +263,7 @@ $(document).ready(function () {
           $("#out_max_temp").val("Error: No data fetched to Change Scale");
         }
         if_farh = 1;
-        $("#scale_switch").fadeOut(200).val("Switch Scale: F to C").fadeIn(200)
+        $("#scale_switch").fadeOut(300).val("Switch Scale: F to C").fadeIn(300)
       }
     });
 });
