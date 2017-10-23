@@ -30,8 +30,8 @@
 
 
 **Project Features for Probable Extra-Credits**  
->1. Graph Plot for Temperature data from the database at the sensor Rpi.
->2. Graph Plot for Temperature data from the database at the sensor Rpi.
+>1. Graph Plot for Temperature data from the database at the sensor Rpi in a separate window at the client-end.
+>2. Graph Plot for Temperature data from the database at the sensor Rpi in a separate window at the client-end.
 >3. Added Simple Authentication for accessing the client.html
 >4. Additional Button to graph-plot temperature data.
 >5. Additional Button to graph-plot humidity data.
