@@ -242,8 +242,8 @@ h1 {
 
 #graph_temp{
   position: absolute;
-  top: 250px;
-  left: 1000px;
+  top: 275px;
+  left: 1050px;
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
@@ -257,7 +257,7 @@ h1 {
 #graph_hum{
   position: absolute;
   top: 405px;
-  left: 1010px;
+  left: 1060px;
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
