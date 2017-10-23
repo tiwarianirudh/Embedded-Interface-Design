@@ -23,7 +23,9 @@ $(document).ready(function () {
 
     // create websocket instance
     ws = new WebSocket("ws://10.0.0.224:8888/ws");
+
     ws.onmessage = function(evt) {
+    //  alert("Connected To Weather Statistics");
       var buffer = evt.data.split("-")
 
       if(buffer[0] == "current_temp"){
@@ -31,29 +33,29 @@ $(document).ready(function () {
           // https://stackoverflow.com/questions/12839567/converting-string-to-number-in-javascript-jquery
           var temp = parseFloat(buffer[1])
           temp = ((temp * 9.0)/5.0)+32
-          $("#out_current_temp").val(temp.toFixed(2)+ "\u00b0F");
+          $("#out_current_temp").val(temp.toFixed(2)+ "\u00b0F   Time Stamp: " + buffer[2] );
         }
         else{
-        $("#out_current_temp").val(buffer[1] + "\u00b0C");
+        $("#out_current_temp").val(buffer[1] + "\u00b0C   Time Stamp: " + buffer[2]);
         }
       }
 
       if(buffer[0] == "current_hum"){
-        $("#out_current_hum").val(buffer[1] + "%");
+        $("#out_current_hum").val(buffer[1] + "%    Time Stamp: " + buffer[2]);
       }
       if(buffer[0] == "avg_temp"){
         if(if_farh){
           // https://stackoverflow.com/questions/12839567/converting-string-to-number-in-javascript-jquery
           var temp = parseFloat(buffer[1])
           temp = ((temp * 9.0)/5.0)+32
-          $("#out_avg_temp").val(temp.toFixed(2)+ "\u00b0F");
+          $("#out_avg_temp").val(temp.toFixed(2)+ "\u00b0F  Time Stamp: " + buffer[2]);
         }
         else{
-        $("#out_avg_temp").val(buffer[1] + "\u00b0C");
+        $("#out_avg_temp").val(buffer[1] + "\u00b0C   Time Stamp: " + buffer[2]);
         }
       }
       if(buffer[0] == "avg_hum"){
-        $("#out_avg_hum").val(buffer[1] + "%");
+        $("#out_avg_hum").val(buffer[1] + "%    Time Stamp: " + buffer[2]);
       }
 
       if(buffer[0] == "min_temp"){
@@ -61,28 +63,28 @@ $(document).ready(function () {
           // https://stackoverflow.com/questions/12839567/converting-string-to-number-in-javascript-jquery
           var temp = parseFloat(buffer[1])
           temp = ((temp * 9.0)/5.0)+32
-          $("#out_min_temp").val(temp.toFixed(2)+ "\u00b0F");
+          $("#out_min_temp").val(temp.toFixed(2)+ "\u00b0F   Time Stamp: " + buffer[2]);
         }
         else{
-        $("#out_min_temp").val(buffer[1] + "\u00b0C");
+        $("#out_min_temp").val(buffer[1] + "\u00b0C   Time Stamp: " + buffer[2]);
         }
       }
       if(buffer[0] == "min_hum"){
-        $("#out_min_hum").val(buffer[1] + "%");
+        $("#out_min_hum").val(buffer[1] + "%   Time Stamp: " + buffer[2]);
       }
       if(buffer[0] == "max_temp"){
         if(if_farh){
           // https://stackoverflow.com/questions/12839567/converting-string-to-number-in-javascript-jquery
           var temp = parseFloat(buffer[1])
           temp = ((temp * 9.0)/5.0)+32
-          $("#out_max_temp").val(temp.toFixed(2)+ "\u00b0F");
+          $("#out_max_temp").val(temp.toFixed(2)+ "\u00b0F   Time Stamp: " + buffer[2]);
         }
         else{
-        $("#out_max_temp").val(buffer[1] + "\u00b0C");
+        $("#out_max_temp").val(buffer[1] + "\u00b0C   Time Stamp: " + buffer[2]);
         }
       }
       if(buffer[0] == "max_hum"){
-        $("#out_max_hum").val(buffer[1] + "%");
+        $("#out_max_hum").val(buffer[1] + "%   Time Stamp: " + buffer[2]);
       }
     };
 
@@ -131,6 +133,7 @@ $(document).ready(function () {
 
     $("#scale_switch").click(function(evt){
       var buffer1;
+      var buffer2;
       //switch_current_data = $("#out_current_temp").val()
 
       if(if_farh){
@@ -144,7 +147,7 @@ $(document).ready(function () {
           $("#out_current_temp").val(temp.toFixed(2)+"\u00b0C");
         }
         else{
-          $("#out_current_temp").val("Error in Conversion");
+          $("#out_current_temp").val("Error: No data fetched to Change Scale");
         }
 
         switch_avg_data = $("#out_avg_temp").val()
@@ -156,7 +159,7 @@ $(document).ready(function () {
           $("#out_avg_temp").val(temp.toFixed(2)+"\u00b0C");
         }
         else{
-          $("#out_avg_temp").val(temp);
+          $("#out_avg_temp").val("Error: No data fetched to Change Scale");
         }
 
         switch_min_data = $("#out_min_temp").val()
@@ -168,7 +171,7 @@ $(document).ready(function () {
           $("#out_min_temp").val(temp.toFixed(2)+"\u00b0C");
         }
         else{
-          $("#out_min_temp").val("Error in Conversion");
+          $("#out_min_temp").val("Error: No data fetched to Change Scale");
         }
 
         switch_max_data = $("#out_max_temp").val()
@@ -180,7 +183,7 @@ $(document).ready(function () {
           $("#out_max_temp").val(temp.toFixed(2)+"\u00b0C");
         }
         else{
-          $("#out_max_temp").val("Error in Conversion");
+          $("#out_max_temp").val("Error: No data fetched to Change Scale");
         }
         if_farh = 0;
         $("#scale_switch").fadeOut(200).val("Switch Scale: C to F").fadeIn(200)
@@ -197,7 +200,7 @@ $(document).ready(function () {
           $("#out_current_temp").val(temp.toFixed(2)+"\u00b0F");
         }
         else{
-          $("#out_current_temp").val("Error in Conversion");
+          $("#out_current_temp").val("Error: No data fetched to Change Scale");
         }
 
         switch_avg_data = $("#out_avg_temp").val()
@@ -209,7 +212,7 @@ $(document).ready(function () {
           $("#out_avg_temp").val(temp.toFixed(2)+"\u00b0F");
         }
         else{
-          $("#out_avg_temp").val("Error in Conversion");
+          $("#out_avg_temp").val("Error: No data fetched to Change Scale");
         }
 
         switch_min_data = $("#out_min_temp").val()
@@ -221,7 +224,7 @@ $(document).ready(function () {
           $("#out_min_temp").val(temp.toFixed(2)+"\u00b0F");
         }
         else{
-          $("#out_min_temp").val("Error in Conversion");
+          $("#out_min_temp").val("Error: No data fetched to Change Scale");
         }
 
         switch_max_data = $("#out_max_temp").val()
@@ -233,7 +236,7 @@ $(document).ready(function () {
           $("#out_max_temp").val(temp.toFixed(2)+"\u00b0F");
         }
         else{
-          $("#out_max_temp").val("Error in Conversion");
+          $("#out_max_temp").val("Error: No data fetched to Change Scale");
         }
         if_farh = 1;
         $("#scale_switch").fadeOut(200).val("Switch Scale: F to C").fadeIn(200)
