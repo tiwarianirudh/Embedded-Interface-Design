@@ -7,7 +7,7 @@
 
 **Project Description and Implementation**  
 >1. Interface DHT22 Sensor with Raspberry Pi3
->2. The GUI is created on QT to show values values for temperature, humidity, date and time, average values, alarm indications, progress-bar indications and graphs.
+>2. The GUI is created on QT to show values for temperature, humidity, date and time, average values, alarm indications, progress-bar indications and graphs.
 >3. The temperature and humidity values are refreshed automatically after every five seconds.
 >4. The average values until the last event of data capture are shown for humidity and temperature sensor values.
 >5. A .csv file is created as a database for storing the obtained values from the sensor.
@@ -30,7 +30,7 @@
 
 
 **Project Features for Probable Extra-Credits**  
->1. Graph Plot for Temperature data from the database at the sensor Rpi in a separate window at the client-end.
+>1. Graph Plot for Humidity data from the database at the sensor Rpi in a separate window at the client-end.
 >2. Graph Plot for Temperature data from the database at the sensor Rpi in a separate window at the client-end.
 >3. Added Simple Authentication for accessing the client.html
 >4. Additional Button to graph-plot temperature data.
