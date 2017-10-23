@@ -22,7 +22,7 @@
 **Instructions to run the code:**  
 >1. Before running the server, run sensing.py which interacts with the sensors and stores the data in the database(a csv). Command: python3 sensing.py
 >2. Start the server by running the following command: python3 server.py
->3. Open the Weather Statistics webpage by clicking on the client.html.
+>3. To access the Weather Statistics webpage, start by clicking on the secure.html.
 >4. The page is then self-explanatory for its functioning.  
 
 
@@ -32,10 +32,11 @@
 **Project Features for Probable Extra-Credits**  
 >1. Graph Plot for Temperature data from the database at the sensor Rpi.
 >2. Graph Plot for Temperature data from the database at the sensor Rpi.
->3. Additional Button to graph-plot temperature data.
->4. Additional Button to graph-plot humidity data.
->5. Additional Button for changing the temperature unit from Celsius to Fahrenheit (For already obtained and for the next new data).
->6. Additional Button for clearing the data currently being displayed on the webpage.
+>3. Added Simple Authentication for accessing the client.html
+>4. Additional Button to graph-plot temperature data.
+>5. Additional Button to graph-plot humidity data.
+>6. Additional Button for changing the temperature unit from Celsius to Fahrenheit (For already obtained and for the next new data).
+>7. Additional Button for clearing the data currently being displayed on the webpage.
 
 
 **References:**  
