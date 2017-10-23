@@ -239,3 +239,31 @@ h1 {
   font-weight: 500;
 
 }
+
+#graph_temp{
+  position: absolute;
+  top: 250px;
+  left: 1000px;
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 8px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+#graph_hum{
+  position: absolute;
+  top: 405px;
+  left: 1010px;
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 8px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
