@@ -1,7 +1,6 @@
 # Embedded Interface Design
 ### Project 2: Remote Websocket/Web Page UI
-### Authors: *Anirudh Tiwari*
-###        : *Mukund M Atre*
+### Authors: *Anirudh Tiwari* and *Mukund M Atre*
 ### University of Colorado Boulder  
 
 
@@ -40,11 +39,17 @@
 
 
 **References:**  
-..* https://www.w3schools.com/html/default.asp
-..* https://www.w3schools.com/css/default.asp
-..* https://www.w3schools.com/jquery/default.asp
-..* https://www.w3schools.com/js/default.asp
-..* https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
-..* https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/overview
+ (https://www.w3schools.com/html/default.asp)
 
-..* https://cdn-learn.adafruit.com/downloads/pdf/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging.pdf
+ (https://www.w3schools.com/css/default.asp)
+
+ (https://www.w3schools.com/jquery/default.asp)
+
+ (https://www.w3schools.com/js/default.asp)
+
+ (https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+
+ (https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/overview)
+
+
+ (https://cdn-learn.adafruit.com/downloads/pdf/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging.pdf)
