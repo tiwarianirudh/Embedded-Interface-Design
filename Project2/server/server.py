@@ -1,11 +1,13 @@
-import matplotlib.pyplot as mplot
+import matplotlib.pyplot as plt
 import tornado.httpserver
 import tornado.websocket
 import tornado.ioloop
 import tornado.web
+import matplotlib
+import numpy
 import socket
 import datetime
-import numpy
+import numpy as np
 import csv
 
 '''
@@ -33,34 +35,47 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 application = tornado.web.Application([
     (r'/ws', WSHandler),
+    (r"/(humid_plot.jpg)", tornado.web.StaticFileHandler, {'path':'./'}),
+    (r"/(temp_plot.jpg)", tornado.web.StaticFileHandler, {'path':'./'})
 ])
 
 def data_query(message):
     csv_file = open('th_data.csv', 'r')
     lastline = csv_file.readlines()[-1]
     temp = lastline.split(",")
+    if (temp[0]==0 or temp[1]==0 or temp[2]==0 or temp[3]==0 or temp[4]==0 or temp[5]==0 or temp[6]==0 or temp[7]==0):
+        return 'ERROR'
     if (message == 'current_hum'):
-        return temp[0] + '-' + temp[8]
+        return temp[0] + '-' + temp[8] + 'hrs'
     elif (message == 'current_temp'):
-        return temp[1] + '-' + temp[8]
+        return temp[1] + '-' + temp[8] + 'hrs'
     elif (message == 'avg_hum'):
-        return temp[2] + '-' + temp[8]
+        return temp[2] + '-' + temp[8] + 'hrs'
     elif (message == 'avg_temp'):
-        return temp[3] + '-' + temp[8]
+        return temp[3] + '-' + temp[8] + 'hrs'
     elif (message == 'max_hum'):
-        return temp[4] + '-' + temp[8]
+        return temp[4] + '-' + temp[8] + 'hrs'
     elif (message == 'max_temp'):
-        return temp[5] + '-' + temp[8]
+        return temp[5] + '-' + temp[8] + 'hrs'
     elif (message == 'min_hum'):
-        return temp[6] + '-' + temp[8]
+        return temp[6] + '-' + temp[8] + 'hrs'
     elif (message == 'min_temp'):
-        return temp[7] + '-' + temp[8]
+        return temp[7] + '-' + temp[8] + 'hrs'
+    elif (message == 'graph_hum'):
+        return hum_url
+    elif (message == 'graph_temp'):
+        return temp_url
     else:
         return 'Invalid input'
 
+
+
 if __name__ == "__main__":
     http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(8888)
-    myIP = socket.gethostbyname(socket.gethostname())
+    myIP = '10.0.0.224'
+    port = 8888
+    hum_url = 'http://' + myIP + ':' + str(port) + '/humid_plot.jpg'
+    temp_url = 'http://' + myIP + ':' + str(port) + '/temp_plot.jpg'
+    http_server.listen(8888, address='10.0.0.224')
     print ('*** Websocket Server Started at %s***' % myIP)
     tornado.ioloop.IOLoop.instance().start()

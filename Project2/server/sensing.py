@@ -200,6 +200,7 @@ class Ui_Sensors(object):
         self.timer = QTimer()
         #self.timer.timeout.connect(self.getCurrTime)
         self.timer.timeout.connect(self.queryData)
+        self.timer.timeout.connect(self.plotGraph)
         self.timer.start(5000)
         QtCore.QMetaObject.connectSlotsByName(Sensors)
 
@@ -284,7 +285,11 @@ class Ui_Sensors(object):
 
         #Error Checking if no data is Received
         else:
+            with open('th_data.csv', 'a', newline = '') as comfile:
+                file_write = csv.writer(comfile, delimiter = ',')
+                file_write.writerow([0, 0, 0, 0, 0, 0, 0, 0, self.getCurrTime()])
             print ("No Data Received; Try Again")
+
 
     #Get current date and time from QTimer()
     def getCurrTime(self):
@@ -301,6 +306,26 @@ class Ui_Sensors(object):
         self.mult_factor = 1.0
         self.add_factor = 0.0
         self.temp_unit = ' \u00b0' + 'C'
+
+    #Function for plotting graph by pulling values from .csv file
+    def plotGraph(self):
+        x = []
+        y = []
+        with open('th_data.csv','r') as csvfile:
+            plots = csv.reader(csvfile, delimiter=',')
+            for row in plots:
+                x.append(float(row[0]))
+                y.append(float(row[1]))
+        i = range(0,len(x))
+        fig1 = mplot.figure(1)
+        mplot.plot(i,x,'b')
+        mplot.title('Humidity Variation Graph')
+        fig1.savefig('humid_plot.jpg')
+
+        fig2 = mplot.figure(2)
+        mplot.plot(i,y,'r')
+        mplot.title('Temperature Variation Graph')
+        fig2.savefig('temp_plot.jpg')
 
 
 if __name__ == "__main__":
