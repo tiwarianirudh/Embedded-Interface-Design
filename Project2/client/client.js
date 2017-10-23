@@ -118,6 +118,17 @@ $(document).ready(function () {
       ws.send("max_hum");
     });
 
+    $("#clear").click(function(evt) {
+      $("#out_current_temp").val(" ");
+      $("#out_avg_temp").val(" ");
+      $("#out_min_temp").val(" ");
+      $("#out_max_temp").val(" ");
+      $("#out_current_hum").val(" ");
+      $("#out_avg_hum").val(" ");
+      $("#out_min_hum").val(" ");
+      $("#out_max_hum").val(" ");
+    });
+
     $("#scale_switch").click(function(evt){
       var buffer1;
       //switch_current_data = $("#out_current_temp").val()
