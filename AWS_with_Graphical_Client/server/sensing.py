@@ -3,6 +3,11 @@
 # Author: Mukund Madhusudan Atre and Anirudh Tiwari
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient as aws
+import json
+import os
+import socket
+import ssl
 from PyQt5.QtCore import QTimer
 import Adafruit_DHT as sense
 import datetime
@@ -200,7 +205,7 @@ class Ui_Sensors(object):
         self.timer = QTimer()
         #self.timer.timeout.connect(self.getCurrTime)
         self.timer.timeout.connect(self.queryData)
-        self.timer.timeout.connect(self.plotGraph)
+        #self.timer.timeout.connect(self.plotGraph)
         self.timer.start(5000)
         QtCore.QMetaObject.connectSlotsByName(Sensors)
 
@@ -234,6 +239,9 @@ class Ui_Sensors(object):
         if humidity and temperature is not None:
             temp_data = '{0:.2f}'.format(temperature)
             humid_data = '{0:.2f}'.format(humidity)
+            pydict = {'Temperature': temp_data, 'Humidity': humid_data}
+            jsondict = json.dumps(pydict)
+            mqttaws_client.publish(topic, jsondict, 1)
             self.curr_temp_box.setText('{0:.2f}'.format((temperature*self.mult_factor)+ self.add_factor) + self.temp_unit)
             self.curr_humid_box.setText(humid_data  + '%')
 
@@ -330,6 +338,18 @@ class Ui_Sensors(object):
 
 if __name__ == "__main__":
     import sys
+    mqttaws_client = None
+    client_name = 'sensor_rpi'
+    host = 'a1qcmx85kdext1.iot.us-east-2.amazonaws.com'
+    rootCAPath = './certificates/root-CA.crt'
+    privateKeyPath = './certificates/rpi-mma.private.key'
+    certificatePath = './certificates/rpi-mma.cert.pem'
+    topic = 'aws_eidp3'
+    mqttaws_client = aws(client_name)
+    mqttaws_client.configureEndpoint(host, 8883)
+    mqttaws_client.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
+    mqttaws_client.connect()
+
     app = QtWidgets.QApplication(sys.argv)
     Sensors = QtWidgets.QMainWindow()
     ui = Ui_Sensors()
