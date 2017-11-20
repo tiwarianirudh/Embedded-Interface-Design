@@ -1,6 +1,6 @@
 # Embedded Interface Design
 ### Project 3: AWS with graphical client
-### Author: *Anirudh Tiwari* *Mukund M Atre*
+### Author: *Anirudh Tiwari*  |  *Mukund M Atre*
 ### University of Colorado Boulder  
 
 
@@ -13,7 +13,7 @@
 >5. AWS_IOT-Python_SDK is used to send data to the AWS in JSON format.
 >6. AWS Lambda then puts the data on a SQS queue and in the Dynamo DB
 >7. The client QT fetches the required data from the SQS queue and display the most recent obtained data and its time-stamp.  
->8. The client can form the graph for the obtained 30 values for Humidity and Temperatures in 8 categories.
+>8. The client can form the graph for the obtained 30 values(or less) for Humidity and Temperatures in 8 categories.
 
 
 
@@ -33,3 +33,4 @@
 > www.stackoverflow.com
 > https://aws.amazon.com/documentation/lambda/?icmpid=docs_menu_internal
 > https://aws.amazon.com/documentation/dynamodb/?icmpid=docs_menu_internal
+> https://www.tutorialspoint.com/nodejs/
