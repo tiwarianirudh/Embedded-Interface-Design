@@ -11,6 +11,11 @@ import boto3
 import ast
 import matplotlib
 from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
+import asyncio
+from aiocoap import *
+import threading
+
 
 class Ui_MainWindow(object):
 
@@ -30,6 +35,7 @@ class Ui_MainWindow(object):
         self.mult_factor = 1.0
         self.add_factor = 0.0
         self.unit = " C\n"
+        self.final_mesg = ""
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -141,13 +147,13 @@ class Ui_MainWindow(object):
                 self.avg_humid_list.append(mesg["avg_humid"])
 
             # generate message to be printed in Message Box
-            final_mesg=""
+            self.final_mesg=""
             for max_t,min_t,curr_t,avg_t,max_h,min_h,curr_h,avg_h in zip(self.max_temp_list,\
                 self.min_temp_list,self.curr_temp_list, self.avg_temp_list, self.max_humid_list,\
                 self.min_humid_list, self.curr_humid_list, self.avg_humid_list):
 
 
-                final_mesg +=   "Max Temp: {0:.2f}".format((max_t*self.mult_factor)+self.add_factor) + self.unit + \
+                self.final_mesg +=   "Max Temp: {0:.2f}".format((max_t*self.mult_factor)+self.add_factor) + self.unit + \
                                 "Min Temp: {0:.2f}".format((min_t*self.mult_factor)+self.add_factor) + self.unit + \
                                 "Last Temp: {0:.2f}".format((curr_t*self.mult_factor)+self.add_factor) + self.unit + \
                                 "Avg Temp: {0:.2f}".format((avg_t*self.mult_factor)+self.add_factor) + self.unit + \
@@ -157,8 +163,11 @@ class Ui_MainWindow(object):
                                 "Avg Hum: "+ str(avg_h) + " %\n\n"
 
 
-            self.MessageBox.setText("Fetched Data:\n"  + final_mesg + "\nTimestamp: " + str(datetime.datetime.now()))
+            self.MessageBox.setText("Fetched Data:\n"  + self.final_mesg + "\nTimestamp: " + str(datetime.datetime.now()))
             self.plotGraph()
+            coapthread = threading.Thread(target=self.CoAPhandler)
+            coapthread.start()
+            coapthread.join()
         # Error Handling
         else:
             self.MessageBox.setText("Error Fetching Data \n")
@@ -198,9 +207,28 @@ class Ui_MainWindow(object):
         self.add_factor = 0.0
         self.unit = " C\n"
 
+    async def coapPUT(self, data):
+        context = await Context.create_client_context()
+
+        await asyncio.sleep(2)
+
+        request = Message(code=PUT, payload=bytes(data, 'utf-8'))
+
+        request.opt.uri_host = '10.0.0.224'
+        request.opt.uri_path = ("other", "block")
+
+        response = await context.request(request).response
+
+        print('Result: %s\n%r'%(response.code, response.payload))
+
+    def CoAPhandler(self):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.coapPUT(self.final_mesg))
+        return 0
 
 if __name__ == "__main__":
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
