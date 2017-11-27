@@ -17,9 +17,11 @@ import csv
 import logging
 import asyncio
 import aiocoap.resource as resource
+import paho.mqtt.client as mqtt
 import aiocoap
 import sys
 import threading
+import time
 
 class Ui_Sensors(object):
 
@@ -341,13 +343,14 @@ class Ui_Sensors(object):
         mplot.title('Temperature Variation Graph')
         fig2.savefig('temp_plot.jpg')
 
+
+
 class BlockResource(resource.Resource):
 
     def set_content(self, content):
         self.content = content
 
     async def render_put(self, request):
-        print('PUT payload: %s' % request.payload)
         self.set_content(request.payload)
         return aiocoap.Message(code=aiocoap.CHANGED, payload=self.content)
 
@@ -376,6 +379,22 @@ def CoAPserver():
     loop.run_forever()
 
 
+def mqtt_server():
+    client = mqtt.Client()
+    client.connect("localhost",1883,60)
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.loop_forever()
+
+
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
+    client.subscribe(up_topic)
+
+def on_message(client, userdata, msg):
+    client.publish(down_topic, msg.payload);
+
+
 if __name__ == "__main__":
     mqttaws_client = None
     client_name = 'sensor_rpi'
@@ -384,6 +403,8 @@ if __name__ == "__main__":
     privateKeyPath = './certificates/rpi-mma.private.key'
     certificatePath = './certificates/rpi-mma.cert.pem'
     topic = 'aws_eidp3'
+    up_topic = 'mqtt_upstream'
+    down_topic = 'mqtt_downstream'
     mqttaws_client = aws(client_name)
     mqttaws_client.configureEndpoint(host, 8883)
     mqttaws_client.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
@@ -396,4 +417,10 @@ if __name__ == "__main__":
 
     coapthread = threading.Thread(target=CoAPserver)
     threads.append(coapthread)
+    coapthread.daemon = True
     coapthread.start()
+
+    mqtt_thread = threading.Thread(target=mqtt_server)
+    threads.append(mqtt_thread)
+    mqtt_thread.daemon = True
+    mqtt_thread.start()
