@@ -14,6 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import asyncio
 from aiocoap import *
+import paho.mqtt.client as mqtt
 import threading
 
 
@@ -165,9 +166,12 @@ class Ui_MainWindow(object):
 
             self.MessageBox.setText("Fetched Data:\n"  + self.final_mesg + "\nTimestamp: " + str(datetime.datetime.now()))
             self.plotGraph()
+            print("\nCoAP Data:\n")
             coapthread = threading.Thread(target=self.CoAPhandler)
             coapthread.start()
             coapthread.join()
+            print("\n\nMQTT Data:\n")
+            client.publish(up_topic, self.final_mesg)
         # Error Handling
         else:
             self.MessageBox.setText("Error Fetching Data \n")
@@ -228,7 +232,32 @@ class Ui_MainWindow(object):
         loop.run_until_complete(self.coapPUT(self.final_mesg))
         return 0
 
+def mqtt_server():
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.loop_forever()
+
+
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
+    client.subscribe(down_topic)
+
+def on_message(client, userdata, msg):
+    print(str(msg.payload))
+
+
 if __name__ == "__main__":
+    up_topic = 'mqtt_upstream'
+    down_topic = 'mqtt_downstream'
+    client = mqtt.Client()
+    client.connect("10.0.0.224",1883,60)
+
+    threads = []
+    mqtt_thread = threading.Thread(target=mqtt_server)
+    threads.append(mqtt_thread)
+    mqtt_thread.daemon = True
+    mqtt_thread.start()
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
