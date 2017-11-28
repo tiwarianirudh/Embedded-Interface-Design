@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 # Client Side for AWS with graphical Client Project
 # Made by Mukund Madhusudan Atre and Anirudh Tiwari
-
-import json
-import sys
-import time
-import datetime
-import matplotlib.pyplot as plt
-import boto3
-import ast
-import matplotlib
 from PyQt5 import QtCore, QtGui, QtWidgets
-import sys
-import asyncio
-from aiocoap import *
+from websocket import create_connection
+import matplotlib.pyplot as plt
 import paho.mqtt.client as mqtt
+from aiocoap import *
+import matplotlib
 import threading
+import datetime
+import asyncio
+import boto3
+import json
+import time
+import sys
+import ast
+import sys
+
 
 
 class Ui_MainWindow(object):
@@ -168,10 +169,25 @@ class Ui_MainWindow(object):
             self.plotGraph()
             print("\nCoAP Data:\n")
             coapthread = threading.Thread(target=self.CoAPhandler)
+            coap_t1 = time.time()
             coapthread.start()
             coapthread.join()
+            coap_t2 = time.time()
+            coap_exec_time = (coap_t2 - coap_t1)
+            print('\nCoAP Protocol data exchange time: %s'% coap_exec_time)
             print("\n\nMQTT Data:\n")
+            mqtt_t1 = time.time()
             client.publish(up_topic, self.final_mesg)
+            msg_event.wait()
+            mqtt_t2 = time.time()
+            mqtt_exec_time = (mqtt_t2 - mqtt_t1)
+            print('\nMQTT Protocol data exchange time: %s seconds'% mqtt_exec_time)
+            msg_event.clear()
+            web_t1 = time.time()
+            self.websocket_client()
+            web_t2 = time.time()
+            web_exec_time = web_t2 - web_t1
+            print('WebSocket Protocol data exchange time: %s'% web_exec_time)
         # Error Handling
         else:
             self.MessageBox.setText("Error Fetching Data \n")
@@ -232,6 +248,15 @@ class Ui_MainWindow(object):
         loop.run_until_complete(self.coapPUT(self.final_mesg))
         return 0
 
+
+    def websocket_client(self):
+        ws.send(self.final_mesg)
+        result =  ws.recv()
+        print("\nWebSocket Data:\n")
+        print(result)
+
+
+
 def mqtt_server():
     client.on_connect = on_connect
     client.on_message = on_message
@@ -244,19 +269,26 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     print(str(msg.payload))
+    msg_event.set()
+
+
 
 
 if __name__ == "__main__":
+    msg_event = threading.Event()
     up_topic = 'mqtt_upstream'
     down_topic = 'mqtt_downstream'
     client = mqtt.Client()
     client.connect("10.0.0.224",1883,60)
+
+    ws = create_connection("ws://10.0.0.224:8888/ws")
 
     threads = []
     mqtt_thread = threading.Thread(target=mqtt_server)
     threads.append(mqtt_thread)
     mqtt_thread.daemon = True
     mqtt_thread.start()
+
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
