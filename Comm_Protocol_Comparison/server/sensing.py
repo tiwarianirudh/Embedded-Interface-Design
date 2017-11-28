@@ -2,26 +2,32 @@
 # Gets data from DHT22 Sensor and displays it in Qt GUI
 # Author: Mukund Madhusudan Atre and Anirudh Tiwari
 
-from PyQt5 import QtCore, QtGui, QtWidgets
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient as aws
-import json
-import os
-import socket
-import ssl
-from PyQt5.QtCore import QTimer
-import Adafruit_DHT as sense
-import datetime
-import matplotlib.pyplot as mplot
-import numpy
-import csv
-import logging
-import asyncio
+from PyQt5 import QtCore, QtGui, QtWidgets
 import aiocoap.resource as resource
 import paho.mqtt.client as mqtt
-import aiocoap
-import sys
+import matplotlib.pyplot as mplot
+from PyQt5.QtCore import QTimer
+import Adafruit_DHT as sense
+import tornado.httpserver
+import tornado.websocket
+import tornado.ioloop
+import tornado.web
 import threading
+import datetime
+import aiocoap
+import socket
+import logging
+import asyncio
+import json
+import numpy
 import time
+import csv
+import sys
+import ssl
+import os
+
+
 
 class Ui_Sensors(object):
 
@@ -395,6 +401,31 @@ def on_message(client, userdata, msg):
     client.publish(down_topic, msg.payload);
 
 
+class WSHandler(tornado.websocket.WebSocketHandler):
+    def open(self):
+        print ('new connection')
+
+    def on_message(self, message):
+        self.write_message(message)
+
+    def on_close(self):
+        print ('connection closed')
+
+    def check_origin(self, origin):
+        return True
+
+application = tornado.web.Application([
+    (r'/ws', WSHandler)])
+
+def websock_server():
+    http_server = tornado.httpserver.HTTPServer(application)
+    myIP = '10.0.0.224'
+    port = 8888
+    http_server.listen(8888, address='10.0.0.224')
+    print ('*** Websocket Server Started at %s***' % myIP)
+    tornado.ioloop.IOLoop.instance().start()
+
+
 if __name__ == "__main__":
     mqttaws_client = None
     client_name = 'sensor_rpi'
@@ -424,3 +455,8 @@ if __name__ == "__main__":
     threads.append(mqtt_thread)
     mqtt_thread.daemon = True
     mqtt_thread.start()
+
+    websocket_thread = threading.Thread(target=websock_server)
+    threads.append(websocket_thread)
+    websocket_thread.daemon = True
+    websocket_thread.start()
