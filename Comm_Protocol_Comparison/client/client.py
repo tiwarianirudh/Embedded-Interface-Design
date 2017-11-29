@@ -12,6 +12,7 @@ import datetime
 import asyncio
 import boto3
 import json
+import pika
 import time
 import sys
 import ast
@@ -188,6 +189,13 @@ class Ui_MainWindow(object):
             web_t2 = time.time()
             web_exec_time = web_t2 - web_t1
             print('WebSocket Protocol data exchange time: %s'% web_exec_time)
+            rabbit_t1 = time.time()
+            self.rabbitmq_publish()
+            rabbit_event.wait()
+            rabbit_t2 = time.time()
+            rabbit_exec_time = rabbit_t2 - rabbit_t1
+            print('Rabbit AMQP Protocol data exchange time: %s'% rabbit_exec_time)
+            rabbit_event.clear()
         # Error Handling
         else:
             self.MessageBox.setText("Error Fetching Data \n")
@@ -256,6 +264,19 @@ class Ui_MainWindow(object):
         print(result)
 
 
+    def rabbitmq_publish(self):
+        channel.queue_declare(queue='up_queue')
+        channel.basic_publish(exchange='', routing_key='up_queue', body= self.final_mesg )
+        return 0
+
+def rabbitmq_subscribe():
+    channel.queue_declare(queue='down_queue')
+    channel.basic_consume(callback,queue='down_queue', no_ack=True)
+    channel.start_consuming()
+
+def callback(ch, method, properties, body):
+    print("\nRabbit AMQP Data:\n%r" % body)
+    rabbit_event.set()
 
 def mqtt_server():
     client.on_connect = on_connect
@@ -276,6 +297,7 @@ def on_message(client, userdata, msg):
 
 if __name__ == "__main__":
     msg_event = threading.Event()
+    rabbit_event =threading.Event()
     up_topic = 'mqtt_upstream'
     down_topic = 'mqtt_downstream'
     client = mqtt.Client()
@@ -283,11 +305,21 @@ if __name__ == "__main__":
 
     ws = create_connection("ws://10.0.0.224:8888/ws")
 
+    credentials = pika.PlainCredentials('mma', 'andromeda')
+    parameters = pika.ConnectionParameters('10.0.0.224', 5672, '/', credentials)
+    connection = pika.BlockingConnection(parameters)
+    channel = connection.channel()
+
     threads = []
     mqtt_thread = threading.Thread(target=mqtt_server)
     threads.append(mqtt_thread)
     mqtt_thread.daemon = True
     mqtt_thread.start()
+
+    rabbitmq_thread = threading.Thread(target=rabbitmq_subscribe)
+    threads.append(rabbitmq_thread)
+    rabbitmq_thread.daemon = True
+    rabbitmq_thread.start()
 
 
     app = QtWidgets.QApplication(sys.argv)
