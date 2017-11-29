@@ -22,6 +22,7 @@ import asyncio
 import json
 import numpy
 import time
+import pika
 import csv
 import sys
 import ssl
@@ -403,13 +404,13 @@ def on_message(client, userdata, msg):
 
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
-        print ('new connection')
+        print ('new websocket connection')
 
     def on_message(self, message):
         self.write_message(message)
 
     def on_close(self):
-        print ('connection closed')
+        print ('websocket connection closed')
 
     def check_origin(self, origin):
         return True
@@ -426,7 +427,23 @@ def websock_server():
     tornado.ioloop.IOLoop.instance().start()
 
 
+
+def rabbitmq_server():
+    channel.queue_declare(queue='up_queue')
+
+    channel.basic_consume(callback,queue='up_queue', no_ack=True)
+
+    channel.start_consuming()
+
+def callback(ch, method, properties, body):
+    channel.queue_declare(queue='down_queue')
+    channel.basic_publish(exchange='', routing_key='down_queue', body= body )
+
+
 if __name__ == "__main__":
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+
     mqttaws_client = None
     client_name = 'sensor_rpi'
     host = 'a1qcmx85kdext1.iot.us-east-2.amazonaws.com'
@@ -440,6 +457,7 @@ if __name__ == "__main__":
     mqttaws_client.configureEndpoint(host, 8883)
     mqttaws_client.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
     mqttaws_client.connect()
+
 
     threads = []
     uithread = threading.Thread(target=UIhandler)
@@ -460,3 +478,8 @@ if __name__ == "__main__":
     threads.append(websocket_thread)
     websocket_thread.daemon = True
     websocket_thread.start()
+
+    rabbitmq_thread = threading.Thread(target=rabbitmq_server)
+    threads.append(rabbitmq_thread)
+    rabbitmq_thread.daemon = True
+    rabbitmq_thread.start()
