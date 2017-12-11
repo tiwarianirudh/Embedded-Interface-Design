@@ -16,9 +16,13 @@
 
 >b. **New Feature**
 >1. The data obtained from the SQS Queue is now exchanged with the server using FOUR protocols namely:
+
 > Co-AP Protocol.
+
 > MQTT Protocol - Using a Broker at the server.
+
 > WebSocket Protocol.
+
 > Rabbit AMQP protocol - Using a queue.
 
 
