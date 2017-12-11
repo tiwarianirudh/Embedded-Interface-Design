@@ -13,12 +13,13 @@
 >6. AWS Lambda then puts the data on a SQS queue and in the Dynamo DB.
 >7. The client QT fetches the required data from the SQS queue and display the most recent obtained data and its time-stamp.  
 >8. The client can form the graph for the obtained 30 values(or less) for Humidity and Temperatures in 8 categories.
+
 >b. **New Feature**
 >1. The data obtained from the SQS Queue is now exchanged with the server using FOUR protocols namely:
->i. Co-AP Protocol.
->ii. MQTT Protocol - Using a Broker at the server.
->iii. WebSocket Protocol.
->iv. Rabbit AMQP protocol - Using a queue.
+> Co-AP Protocol.
+> MQTT Protocol - Using a Broker at the server.
+> WebSocket Protocol.
+> Rabbit AMQP protocol - Using a queue.
 
 
 **Project Features for Extra-Credits**  
