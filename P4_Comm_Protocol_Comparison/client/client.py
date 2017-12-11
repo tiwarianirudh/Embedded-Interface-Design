@@ -20,6 +20,7 @@ import sys
 
 
 class Ui_MainWindow(object):
+    # Initializing necessary parameters
     def __init__(self):
         self.sqs = boto3.resource('sqs')
         # Call the queue by name
@@ -192,6 +193,7 @@ class Ui_MainWindow(object):
         else:
             self.MessageBox.setText("Error Fetching Data \n")
 
+# Function for testing all communication protocols
     def test_protocols(self):
         self.fetch_data()
 
@@ -261,8 +263,8 @@ class Ui_MainWindow(object):
         plt.xlabel('Number of readings')
         plt.show()
 
+# Function for plotting timing Comparison of protocols
     def plotProtocolStats(self):
-        self.fetch_data()
         plt.plot(self.num_messages_list, self.coap_time_list, 'b-', label='CoAP')
         plt.plot(self.num_messages_list, self.mqtt_time_list, 'r-', label='MQTT')
         plt.plot(self.num_messages_list, self.web_time_list, 'y-', label='WebSocket')
@@ -285,6 +287,7 @@ class Ui_MainWindow(object):
         self.add_factor = 0.0
         self.unit = ' \u00b0' + " C\n"
 
+
     async def coapPUT(self, data):
         context = await Context.create_client_context()
 
@@ -292,13 +295,14 @@ class Ui_MainWindow(object):
 
         request = Message(code=PUT, payload=bytes(data, 'utf-8'))
 
-        request.opt.uri_host = '10.0.0.224'
+        request.opt.uri_host = ip
         request.opt.uri_path = ("other", "block")
 
         response = await context.request(request).response
 
         print('Result: %s\n%r'%(response.code, response.payload))
 
+# Handler for CoAP protocol
     def CoAPhandler(self):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -306,7 +310,7 @@ class Ui_MainWindow(object):
         loop.run_until_complete(self.coapPUT(self.final_mesg))
         return 0
 
-
+# Handler for Websocket
     def websocket_client(self):
         ws.send(self.final_mesg)
         result =  ws.recv()
@@ -344,20 +348,22 @@ def on_message(client, userdata, msg):
 
 
 if __name__ == "__main__":
+    ip = "10.0.0.224"
     msg_event = threading.Event()
     rabbit_event =threading.Event()
     up_topic = 'mqtt_upstream'
     down_topic = 'mqtt_downstream'
     client = mqtt.Client()
-    client.connect("10.0.0.224",1883,60)
+    client.connect(ip,1883,60)
 
-    ws = create_connection("ws://10.0.0.224:8888/ws")
+    ws = create_connection("ws://" + ip + ":8888/ws")
 
     credentials = pika.PlainCredentials('mma', 'andromeda')
-    parameters = pika.ConnectionParameters('10.0.0.224', 5672, '/', credentials)
+    parameters = pika.ConnectionParameters(ip, 5672, '/', credentials)
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
 
+# Threads were needed only for MQTT and Rabbit + AMQP
     threads = []
     mqtt_thread = threading.Thread(target=mqtt_server)
     threads.append(mqtt_thread)
