@@ -31,7 +31,7 @@ import os
 
 
 class Ui_Sensors(object):
-
+# Initializing necessary parameters
     def __init__(self):
         self.sum_humid = 0
         self.sum_temp = 0
@@ -256,6 +256,7 @@ class Ui_Sensors(object):
             humid_data = '{0:.2f}'.format(humidity)
             pydict = {'Temperature': temp_data, 'Humidity': humid_data}
             jsondict = json.dumps(pydict)
+            # Publishing data to aws topic
             mqttaws_client.publish(topic, jsondict, 1)
             self.curr_temp_box.setText('{0:.2f}'.format((temperature*self.mult_factor)+ self.add_factor) + self.temp_unit)
             self.curr_humid_box.setText(humid_data  + '%')
@@ -320,6 +321,7 @@ class Ui_Sensors(object):
         self.datetime_box.setText(current.strftime("%m/%d/%Y %H:%M"))
         return current.strftime("%m/%d/%Y %H:%M")
 
+    # Functions for temperature unit conversion
     def cel_to_fah(self):
         self.mult_factor = 1.8
         self.add_factor = 32.0
@@ -351,7 +353,7 @@ class Ui_Sensors(object):
         fig2.savefig('temp_plot.jpg')
 
 
-
+# Blocking connection for CoAP Server
 class BlockResource(resource.Resource):
 
     def set_content(self, content):
@@ -361,6 +363,7 @@ class BlockResource(resource.Resource):
         self.set_content(request.payload)
         return aiocoap.Message(code=aiocoap.CHANGED, payload=self.content)
 
+# Handler for QT
 def UIhandler():
     app = QtWidgets.QApplication(sys.argv)
     Sensors = QtWidgets.QMainWindow()
@@ -369,6 +372,7 @@ def UIhandler():
     Sensors.show()
     sys.exit(app.exec_())
 
+# Handler for CoAp server
 def CoAPserver():
     # Resource tree creation
     loop = asyncio.new_event_loop()
@@ -385,7 +389,7 @@ def CoAPserver():
     loop = asyncio.get_event_loop()
     loop.run_forever()
 
-
+# Handler for MQTT server
 def mqtt_server():
     client = mqtt.Client()
     client.connect("localhost",1883,60)
@@ -401,7 +405,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     client.publish(down_topic, msg.payload);
 
-
+# Handler for websocket
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print ('new websocket connection')
@@ -420,14 +424,14 @@ application = tornado.web.Application([
 
 def websock_server():
     http_server = tornado.httpserver.HTTPServer(application)
-    myIP = '10.0.0.224'
+    myIP = '127.0.0.1'
     port = 8888
     http_server.listen(8888, address='10.0.0.224')
     print ('*** Websocket Server Started at %s***' % myIP)
     tornado.ioloop.IOLoop.instance().start()
 
 
-
+# Handler for Rabbit AMQP
 def rabbitmq_server():
     channel.queue_declare(queue='up_queue')
 
@@ -458,7 +462,7 @@ if __name__ == "__main__":
     mqttaws_client.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
     mqttaws_client.connect()
 
-
+# Thread declarations for UI and communication protocols
     threads = []
     uithread = threading.Thread(target=UIhandler)
     threads.append(uithread)
