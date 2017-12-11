@@ -37,6 +37,11 @@ class Ui_MainWindow(object):
         self.add_factor = 0.0
         self.unit = ' \u00b0' + " C\n"
         self.final_mesg = ""
+        self.num_messages_list=[]
+        self.coap_time_list=[]
+        self.mqtt_time_list=[]
+        self.web_time_list=[]
+        self.amqp_time_list=[]
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -189,6 +194,7 @@ class Ui_MainWindow(object):
 
     def test_protocols(self):
         self.fetch_data()
+
         print("\nCoAP Data:\n")
         coapthread = threading.Thread(target=self.CoAPhandler)
         coap_t1 = time.time()
@@ -196,27 +202,41 @@ class Ui_MainWindow(object):
         coapthread.join()
         coap_t2 = time.time()
         coap_exec_time = (coap_t2 - coap_t1)
+        self.coap_time_list.append(coap_exec_time)
         print('\nCoAP Protocol data exchange time: %s'% coap_exec_time)
+        print('\nNumber of Messages: %d'% self.num_readings)
+
         print("\n\nMQTT Data:\n")
         mqtt_t1 = time.time()
         client.publish(up_topic, self.final_mesg)
         msg_event.wait()
         mqtt_t2 = time.time()
         mqtt_exec_time = (mqtt_t2 - mqtt_t1)
-        print('\nMQTT Protocol data exchange time: %s seconds'% mqtt_exec_time)
         msg_event.clear()
+        self.mqtt_time_list.append(mqtt_exec_time)
+        print('\nMQTT Protocol data exchange time: %s seconds'% mqtt_exec_time)
+        print('\nNumber of Messages: %d'% self.num_readings)
+
         web_t1 = time.time()
         self.websocket_client()
         web_t2 = time.time()
         web_exec_time = web_t2 - web_t1
+        self.web_time_list.append(web_exec_time)
         print('WebSocket Protocol data exchange time: %s'% web_exec_time)
+        print('\nNumber of Messages: %d'% self.num_readings)
+
         rabbit_t1 = time.time()
         self.rabbitmq_publish()
         rabbit_event.wait()
         rabbit_t2 = time.time()
         rabbit_exec_time = rabbit_t2 - rabbit_t1
-        print('Rabbit AMQP Protocol data exchange time: %s'% rabbit_exec_time)
         rabbit_event.clear()
+        self.amqp_time_list.append(rabbit_exec_time)
+        print('Rabbit AMQP Protocol data exchange time: %s'% rabbit_exec_time)
+        print('\nNumber of Messages: %d'% self.num_readings)
+
+        self.num_messages_list.append(self.num_readings);
+        self.plotProtocolStats()
 
     # Function for plotting graph of humidity and temperature separately
     def plotGraph(self):
@@ -228,7 +248,7 @@ class Ui_MainWindow(object):
         plt.legend(loc='best')
         plt.title('Temperature Analysis')
         plt.ylabel('Temperature C')
-        plt.xlabel('num_readings')
+        plt.xlabel('Number of readings')
         plt.show()
 
         plt.plot(range(self.num_readings), self.max_humid_list, 'b-', label='Max Hum')
@@ -239,6 +259,18 @@ class Ui_MainWindow(object):
         plt.title('Humidity Analysis')
         plt.ylabel('Humidity %')
         plt.xlabel('Number of readings')
+        plt.show()
+
+    def plotProtocolStats(self):
+        self.fetch_data()
+        plt.plot(self.num_messages_list, self.coap_time_list, 'b-', label='CoAP')
+        plt.plot(self.num_messages_list, self.mqtt_time_list, 'r-', label='MQTT')
+        plt.plot(self.num_messages_list, self.web_time_list, 'y-', label='WebSocket')
+        plt.plot(self.num_messages_list, self.amqp_time_list, 'g-', label='Rabbit AMQP')
+        plt.legend(loc='best')
+        plt.title('Comparison of Protocols')
+        plt.ylabel('Protocol transfer time')
+        plt.xlabel('Number of messages')
         plt.show()
 
     # Unit conversion
